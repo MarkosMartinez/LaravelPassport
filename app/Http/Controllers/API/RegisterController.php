@@ -41,7 +41,7 @@ class RegisterController extends BaseController
         $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $user->name;
 
-        return $this->sendResponse($success, 'User register successfully.');
+        return $this->sendResponse($success, 'Usuario registrado correctamente!');
     }
 
     /**
@@ -58,19 +58,19 @@ class RegisterController extends BaseController
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] = $user->createToken('MyApp')->accessToken;
+            $success['token'] = $user->createToken('LaravelPassport')->accessToken;
             $success['name'] = $user->name;
 
-            return $this->sendResponse($success, 'User login successfully.');
+            return $this->sendResponse($success, 'Usuario logueado correctamente');
         } else {
-            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->sendError('Unautorizado.', ['error' => 'Unautorizado']);
         }
     }
 
     public function logout(Request $request)
     {
         $user = Auth::user()->token();
-        $user->delete();
+        $user->delete(); // o revoke();
         return response()
         ->json([
             'message' => 'Sesion cerrada correctamente!',
@@ -79,7 +79,7 @@ class RegisterController extends BaseController
         public function logoutall(Request $request)
     {
         Auth::user()->tokens->each(function($token, $key) {
-            $token->delete();
+            $token->delete(); // o revoke();
         });
         return response()
         ->json([
